@@ -22,7 +22,15 @@ func main() {
 	if err == nil {
 		fmt.Println("Your answer is correct.")
 	} else {
-		fmt.Printf("Wrong answer after correct execution of %v\n", correct[len(correct)-1])
 		fmt.Println(err)
+		if len(correct) > 0 {
+			fmt.Printf("Wrong answer after correct execution of %v\n", correct[len(correct)-1])
+		}
+	}
+	if global.Option.Show {
+		fmt.Println("Your real output is listed as follows:")
+		for _, t := range traceAns {
+			fmt.Println(t)
+		}
 	}
 }

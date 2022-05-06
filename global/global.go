@@ -18,6 +18,7 @@ var Option struct {
 	MemWAW         bool // memory write-after-write
 	ReOrder        bool // allow re-order (separately check per register/memory address)
 	CheckByCpu     bool // check by cpu state (by behavior compare default)
+	Show           bool // show output after check result
 }
 
 func init() {
@@ -26,18 +27,16 @@ func init() {
 	pflag.BoolVar(&Option.Separate, "sep", false, "separate register and memory")
 	pflag.BoolVar(&Option.RegWriteOrigin, "reg-origin", false, "allow write-back origin value to register")
 	pflag.BoolVar(&Option.MemWriteOrigin, "mem-origin", false, "allow write-back origin value to memory")
-	pflag.BoolVar(&Option.RegWAW, "reg-waw", false, "register write after write")
-	pflag.BoolVar(&Option.MemWAW, "mem-waw", false, "memory write after write")
-	pflag.BoolVar(&Option.ReOrder, "reorder", false, "allow instruction re-order")
+	//pflag.BoolVar(&Option.RegWAW, "reg-waw", false, "register write after write")
+	//pflag.BoolVar(&Option.MemWAW, "mem-waw", false, "memory write after write")
+	//pflag.BoolVar(&Option.ReOrder, "reorder", false, "allow instruction re-order")
 	pflag.BoolVar(&Option.CheckByCpu, "cpu", false, "check by cpu state (default by behavior compare)")
+	pflag.BoolVar(&Option.Show, "show", false, "show listed output after check result")
 }
 
 func ParseArgv() {
 	pflag.Parse()
 	if len(StdFile) == 0 {
 		log.Fatalln("please specify standard file.")
-	}
-	if len(AnsFile) == 0 {
-		log.Fatalln("please specify answer file.")
 	}
 }

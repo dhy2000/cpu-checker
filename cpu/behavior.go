@@ -75,9 +75,9 @@ var (
 	MemPattern = regexp.MustCompile(`(?P<time>\d*)\s*@\s*(?P<pc>[\dA-Fa-fXxZz]+)\s*:\s*\*\s*(?P<address>[\dA-Fa-fXxZz]+)\s*<=\s*(?P<data>[\dA-Fa-fXxZz]+)`)
 )
 
-func detectTriState(s string) error {
-	if strings.ContainsAny(s, "XzZz") {
-		return TriStateError{Value: s}
+func detectTriState(value string, line string) error {
+	if strings.ContainsAny(value, "XzZz") {
+		return TriStateError{Value: value, Output: line}
 	}
 	return nil
 }
@@ -104,7 +104,7 @@ func ParseRegBehavior(s string) (*RegBehavior, error) {
 		timestamp, _ = parseDec(sTimestamp)
 	}
 	for _, ss := range []string{sPc, sReg, sData} {
-		if err := detectTriState(ss); err != nil {
+		if err := detectTriState(ss, fmt.Sprintf("@%s: $%s <= %s", sPc, sReg, sData)); err != nil {
 			return nil, err
 		}
 	}
@@ -146,7 +146,7 @@ func ParseMemBehavior(s string) (*MemBehavior, error) {
 		timestamp, _ = parseDec(sTimestamp)
 	}
 	for _, ss := range []string{sPc, sAddress, sData} {
-		if err := detectTriState(ss); err != nil {
+		if err := detectTriState(ss, fmt.Sprintf("@%s: *%s <= %s", sPc, sAddress, sData)); err != nil {
 			return nil, err
 		}
 	}

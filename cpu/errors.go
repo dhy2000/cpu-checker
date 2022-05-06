@@ -11,11 +11,12 @@ func (r RegNumberError) Error() string {
 }
 
 type TriStateError struct {
-	Value string // 出现三态的字面值
+	Value  string // 出现三态的字面值
+	Output string // 出错的原始输出
 }
 
 func (t TriStateError) Error() string {
-	return fmt.Sprintf("unexpected tri-state literal: %v", t.Value)
+	return fmt.Sprintf("unexpected tri-state literal: %v in %v", t.Value, t.Output)
 }
 
 type UnalignedProgramCounter struct {

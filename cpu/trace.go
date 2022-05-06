@@ -10,11 +10,17 @@ import (
 type Trace []Behavior
 
 func ReadTraceFromFile(filename string) (Trace, error) {
-	file, err := os.OpenFile(filename, os.O_RDONLY, 0444)
-	if err != nil {
-		return nil, err
+	var file *os.File
+	if len(filename) == 0 {
+		file = os.Stdin
+	} else {
+		var err error
+		file, err = os.OpenFile(filename, os.O_RDONLY, 0444)
+		if err != nil {
+			return nil, err
+		}
+		defer func() { _ = file.Close() }()
 	}
-	defer func() { _ = file.Close() }()
 	buffer := bufio.NewReader(file)
 	trace := make(Trace, 0)
 	for {
