@@ -52,6 +52,13 @@ func SimpleCheck(std cpu.Trace, ans cpu.Trace, byCpu bool) (cpu.Trace, error) {
 		i++
 		j++
 	}
+	// skip ignored behavior
+	for i < len(std) && IsWriteRegZero(std[i]) {
+		i++
+	}
+	for j < len(ans) && IsWriteRegZero(ans[j]) {
+		j++
+	}
 	if err == nil && i < len(std) && j >= len(ans) {
 		err = cpu.WrongBehavior{Got: nil, Expected: std[i]}
 	}
