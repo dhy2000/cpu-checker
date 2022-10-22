@@ -11,10 +11,12 @@ import (
 
 type Behavior interface {
 	fmt.Stringer
-	Simulate(c *Cpu) bool // return: CPU 状态是否变化
+	Simulate(c *Cpu) bool // return: CPU
+	LineNumber() uint
 }
 
 type RegBehavior struct {
+	Line           uint     // 行号
 	Timestamp      uint     // 时间戳 (0 为不存在)
 	ProgramCounter WordType // 指令计数器
 	RegNumber      int      // 寄存器编号
@@ -22,6 +24,7 @@ type RegBehavior struct {
 }
 
 type MemBehavior struct {
+	Line           uint     // 行号
 	Timestamp      uint     // 时间戳 (0 为不存在)
 	ProgramCounter WordType // 指令计数器
 	Address        WordType // 内存地址
@@ -43,6 +46,10 @@ func (r RegBehavior) Simulate(c *Cpu) bool {
 	return true
 }
 
+func (r RegBehavior) LineNumber() uint {
+	return r.Line
+}
+
 func (m MemBehavior) String() string {
 	return fmt.Sprintf("@%08x: *%08x <= %08x", m.ProgramCounter, m.Address, m.Data)
 }
@@ -53,6 +60,10 @@ func (m MemBehavior) Simulate(c *Cpu) bool {
 	}
 	c.mem.Write(m.Address, m.Data)
 	return true
+}
+
+func (m MemBehavior) LineNumber() uint {
+	return m.Line
 }
 
 func IsEqualBehavior(this, that Behavior) bool {
@@ -92,7 +103,7 @@ func parseDec(s string) (uint, error) {
 	return uint(i64), err
 }
 
-func ParseRegBehavior(s string) (*RegBehavior, error) {
+func ParseRegBehavior(s string, line uint) (*RegBehavior, error) {
 	match := RegPattern.FindStringSubmatch(s)
 	if len(match) < 5 {
 		return nil, nil
@@ -120,6 +131,7 @@ func ParseRegBehavior(s string) (*RegBehavior, error) {
 		return nil, err
 	}
 	behavior := &RegBehavior{
+		Line:           line,
 		Timestamp:      timestamp,
 		ProgramCounter: WordType(pc),
 		RegNumber:      int(reg),
@@ -134,7 +146,7 @@ func ParseRegBehavior(s string) (*RegBehavior, error) {
 	return behavior, nil
 }
 
-func ParseMemBehavior(s string) (*MemBehavior, error) {
+func ParseMemBehavior(s string, line uint) (*MemBehavior, error) {
 	match := MemPattern.FindStringSubmatch(s)
 	if len(match) < 5 {
 		return nil, nil
@@ -162,6 +174,7 @@ func ParseMemBehavior(s string) (*MemBehavior, error) {
 		return nil, err
 	}
 	behavior := &MemBehavior{
+		Line:           line,
 		Timestamp:      timestamp,
 		ProgramCounter: WordType(pc),
 		Address:        WordType(address),
@@ -176,11 +189,11 @@ func ParseMemBehavior(s string) (*MemBehavior, error) {
 	return behavior, nil
 }
 
-func ParseBehavior(s string) (Behavior, error) {
-	if behavior, err := ParseRegBehavior(s); behavior != nil || err != nil {
+func ParseBehavior(s string, line uint) (Behavior, error) {
+	if behavior, err := ParseRegBehavior(s, line); behavior != nil || err != nil {
 		return behavior, err
 	}
-	if behavior, err := ParseMemBehavior(s); behavior != nil || err != nil {
+	if behavior, err := ParseMemBehavior(s, line); behavior != nil || err != nil {
 		return behavior, err
 	}
 	return nil, nil

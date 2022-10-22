@@ -19,14 +19,14 @@
 ## 使用示例
 
 ```shell
-./cpu-checker --std=file [--ans=file] [--show] [--cpu] { --sep | --reg-origin | --mem-origin } 
+./cpu-checker --std=file [--ans=file] [--cpu] { --sep | --reg-origin | --mem-origin } { --std-format=file } { --ans-format=file }
 ```
 
 参数说明:
 
 - `--std`: 指定参考的标准 CPU 输出序列文件（即标准答案），必须指定
 - `--ans`: 待检查的 CPU 输出序列文件，如不指定则从标准输入读取
-- `--show`: 将被检查的 CPU 序列输出到评测信息中
+- `--std-format`, `--ans-format`: 统一 CPU 序列格式并输出到文件(方便文本对比)
 - `--cpu`: 根据 CPU 状态是否一致检查正确性(缺省则直接比对输出序列)
 - `--sep`: 是否将写寄存器与写内存分开检测
 - `--reg-origin`: 允许寄存器写回原值

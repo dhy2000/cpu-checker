@@ -24,13 +24,15 @@ func main() {
 	} else {
 		fmt.Println(err)
 		if len(correct) > 0 {
-			fmt.Printf("Wrong answer after correct execution of %v\n", correct[len(correct)-1])
+			lastCorrect := correct[len(correct)-1]
+			fmt.Printf("Wrong answer after correct execution of [%d] %v\n", lastCorrect.LineNumber(), lastCorrect)
 		}
 	}
-	if global.Option.Show {
-		fmt.Println("Your real output is listed as follows:")
-		for _, t := range traceAns {
-			fmt.Println(t)
-		}
+	// formatted output
+	if err = traceStd.FormattedOutput(global.StdFormat); err != nil {
+		log.Println(err)
+	}
+	if err = traceAns.FormattedOutput(global.AnsFormat); err != nil {
+		log.Println(err)
 	}
 }

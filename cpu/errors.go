@@ -43,11 +43,11 @@ type WrongBehavior struct {
 func (w WrongBehavior) Error() string {
 	switch {
 	case w.Got != nil && w.Expected != nil:
-		return fmt.Sprintf("Wrong behavior, Got: %v, Expected %v", w.Got, w.Expected)
+		return fmt.Sprintf("Wrong behavior, Got: [%d] %v, Expected: [%d] %v", w.Got.LineNumber(), w.Got, w.Expected.LineNumber(), w.Expected)
 	case w.Got == nil && w.Expected != nil:
-		return fmt.Sprintf("Output less than expected, Expected %v", w.Expected)
+		return fmt.Sprintf("Output less than expected, Expected: [%d] %v", w.Expected.LineNumber(), w.Expected)
 	case w.Got != nil && w.Expected == nil:
-		return fmt.Sprintf("Output more than expected, Got:%v", w.Got)
+		return fmt.Sprintf("Output more than expected, Got: [%d] %v", w.Got.LineNumber(), w.Got)
 	default:
 		return ""
 	}
@@ -60,7 +60,7 @@ type WrongRegState struct {
 }
 
 func (w WrongRegState) Error() string {
-	return fmt.Sprintf("Wrong register value grf[%d], Got: %08x, Expected %08x", w.Number, w.Got, w.Expected)
+	return fmt.Sprintf("Wrong register value grf[%d], Got: %08x, Expected: %08x", w.Number, w.Got, w.Expected)
 }
 
 type WrongMemState struct {
