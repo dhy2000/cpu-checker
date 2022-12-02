@@ -52,7 +52,7 @@ func (trace Trace) FormattedOutput(filename string) error {
 		return nil
 	}
 	var err error
-	file, err = os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0644)
+	file, err = os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0644)
 	defer func() { _ = file.Close() }()
 	if err != nil {
 		return err
